@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #172033;
+        --muted: #667085;
+        --border: #dfe4ec;
+        --border-focus: #7c3aed;
+        --accent: #7c3aed;
+        --accent-dark: #6528c5;
+        --success-bg: #ecfdf3;
+        --success-border: #a7f3d0;
+        --success-text: #065f46;
+        --error-bg: #fff7ed;
+        --error-border: #fed7aa;
+        --error-text: #9a3412;
+        --shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+        --radius: 18px;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .shell {
+        width: min(720px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 58px 0 72px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(32px, 6vw, 48px);
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+      }
+
+      .intro {
+        margin: 17px 0 30px;
+        max-width: 610px;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.65;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(223, 228, 236, .9);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: clamp(22px, 5vw, 36px);
+      }
+
+      .field { margin-bottom: 25px; }
+      .field:last-of-type { margin-bottom: 28px; }
+
+      label, legend {
+        display: block;
+        margin-bottom: 9px;
+        font-size: 14px;
+        font-weight: 750;
+      }
+
+      input[type="text"], textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--text);
+        font: inherit;
+        outline: none;
+        transition: border-color .15s ease, box-shadow .15s ease;
+      }
+
+      input[type="text"] {
+        min-height: 52px;
+        padding: 0 14px;
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+        padding: 13px 14px;
+        line-height: 1.5;
+      }
+
+      input[type="text"]:focus, textarea:focus {
+        border-color: var(--border-focus);
+        box-shadow: 0 0 0 4px rgba(124, 58, 237, .12);
+      }
+
+      .hint {
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      fieldset {
+        padding: 0;
+        margin: 0;
+        border: 0;
+      }
+
+      .roles {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      .other-role {
+        margin-top: 10px;
+        display: none;
+      }
+
+      .other-role.show { display: block; }
+
+      .role-option {
+        position: relative;
+      }
+
+      .role-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .role-option label {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: all .15s ease;
+      }
+
+      .role-option input:checked + label {
+        border-color: var(--accent);
+        background: rgba(124, 58, 237, .07);
+        color: var(--accent-dark);
+        box-shadow: inset 0 0 0 1px var(--accent);
+      }
+
+      .role-option input:focus-visible + label {
+        outline: 3px solid rgba(124, 58, 237, .18);
+        outline-offset: 2px;
+      }
+
+      button {
+        width: 100%;
+        min-height: 54px;
+        border: 0;
+        border-radius: 13px;
+        background: var(--accent);
+        color: white;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: background .15s ease, transform .05s ease;
+      }
+
+      button:hover:not(:disabled) { background: var(--accent-dark); }
+      button:active:not(:disabled) { transform: translateY(1px); }
+      button:disabled { opacity: .65; cursor: wait; }
+
+      .status {
+        display: none;
+        margin-bottom: 20px;
+        padding: 13px 15px;
+        border-radius: 12px;
+        border: 1px solid;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .status.show { display: block; }
+      .status.success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+      .status.error { background: var(--error-bg); border-color: var(--error-border); color: var(--error-text); }
+
+      .page-nav { display: flex; gap: 8px; margin: 18px 0 18px; }
+      .nav-button { width: auto; min-height: 42px; padding: 0 16px; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--text); font: inherit; font-weight: 750; cursor: pointer; }
+      .nav-button.active { border-color: var(--accent); background: rgba(124, 58, 237, .08); color: var(--accent-dark); }
+      .browse-section { margin-top: 8px; }
+      .browse-header { margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; }
+      .browse-header h2 { margin: 0; font-size: clamp(28px, 5vw, 40px); letter-spacing: -.035em; }
+      .browse-intro { margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
+      .refresh-button {
+        width: auto;
+        min-width: 116px;
+        min-height: 44px;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--text);
+        font: inherit;
+        font-weight: 750;
+        cursor: pointer;
+        flex: 0 0 auto;
+      }
+      .refresh-button:hover:not(:disabled) { background: #f8f9fb; }
+      .refresh-button:disabled { opacity: .65; cursor: wait; }
+      .browse-card { background: var(--card); border: 1px solid rgba(223,228,236,.9); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+      .browse-controls { display: grid; grid-template-columns: minmax(240px, 1fr) auto; gap: 14px; padding: 20px; }
+      .search { min-height: 48px; width: 100%; border: 1px solid var(--border); border-radius: 11px; padding: 0 14px; font: inherit; outline: none; }
+      .search:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(124,58,237,.12); }
+      .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      .filter { min-height: 42px; padding: 0 13px; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--text); font: inherit; font-weight: 700; cursor: pointer; }
+      .filter.active { border-color: var(--accent); background: rgba(124,58,237,.08); color: var(--accent-dark); }
+      .summary { padding: 0 20px 16px; color: var(--muted); font-size: 13px; }
+      .table-wrap { overflow-x: auto; border-top: 1px solid var(--border); }
+      table { width: 100%; border-collapse: collapse; min-width: 760px; }
+      th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+      th { background: #fafbfc; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+      td { font-size: 14px; line-height: 1.5; }
+      tr:last-child td { border-bottom: 0; }
+      .tool { font-weight: 800; }
+      .users { display: flex; flex-wrap: wrap; gap: 6px; }
+      .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #f1f3f7; font-size: 12px; font-weight: 700; white-space: nowrap; }
+      .empty, .loading { padding: 46px 24px; text-align: center; color: var(--muted); }
+      .date { white-space: nowrap; color: var(--muted); font-size: 12px; }
+
+      .footer {
+        margin-top: 18px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .footer a {
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .footer a:hover { text-decoration: underline; }
+
+      .count {
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .required { color: var(--accent); }
+
+      @media (max-width: 560px) {
+        .shell { width: min(100% - 22px, 720px); padding-top: 34px; }
+        .roles { grid-template-columns: 1fr; }
+        .card { border-radius: 15px; padding: 21px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <p class="eyebrow">Classroom technology feedback</p>
+      <h1>What technology are you seeing in classrooms?</h1>
+      <p class="intro">
+        Add one technology you have observed and a concrete example of how it is being used.
+        This is intentionally quick — one observation at a time.
+      </p>
+
+      <section class="card" aria-labelledby="form-title">
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+
+        <form id="observationForm" novalidate>
+          <div class="field">
+            <label for="tool">Tool name <span class="required">*</span></label>
+            <input id="tool" name="tool" type="text" maxlength="100" autocomplete="off" placeholder="e.g., Canvas, ChatGPT, Poll Everywhere" required>
+          </div>
+
+          <div class="field">
+            <fieldset>
+              <legend>Who uses it? <span class="required">*</span></legend>
+              <div class="roles">
+                <div class="role-option">
+                  <input id="professor" name="role" type="checkbox" value="Professor">
+                  <label for="professor">Professor</label>
+                </div>
+                <div class="role-option">
+                  <input id="student" name="role" type="checkbox" value="Student">
+                  <label for="student">Student</label>
+                </div>
+                <div class="role-option">
+                  <input id="ta" name="role" type="checkbox" value="TA">
+                  <label for="ta">TA</label>
+                </div>
+                <div class="role-option">
+                  <input id="other" name="role" type="checkbox" value="Other">
+                  <label for="other">Other</label>
+                </div>
+              </div>
+              <div id="otherRoleWrap" class="other-role">
+                <label for="otherRole">Who else uses it?</label>
+                <input id="otherRole" name="otherRole" type="text" maxlength="100" placeholder="e.g., Librarian, Guest speaker">
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="field">
+            <label for="useCase">Example use case <span class="required">*</span></label>
+            <textarea id="useCase" name="useCase" maxlength="500" placeholder="e.g., Students use it to brainstorm possible paper topics before drafting."></textarea>
+            <div class="hint">One concrete example is enough. Up to 500 characters.</div>
+          </div>
+
+          <button id="submitButton" type="submit">Add observation</button>
+        </form>
+      </section>
+
+      <nav class="page-nav" aria-label="Pages">
+        <button id="showAdd" class="nav-button active" type="button">Add observation</button>
+        <button id="showBrowse" class="nav-button" type="button">Browse observations</button>
+      </nav>
+
+      <section id="browseSection" class="browse-section" aria-labelledby="browse-title" hidden>
+        <div class="browse-header">
+          <div>
+            <p class="eyebrow">Read-only collection</p>
+            <h2 id="browse-title">Browse observations</h2>
+            <p class="browse-intro">Search and filter what observers have reported. Observations can only be added through the form.</p>
+          </div>
+          <button id="refreshBrowse" class="refresh-button" type="button">↻ Refresh</button>
+        </div>
+        <div class="browse-card">
+          <div class="browse-controls">
+            <input id="search" class="search" type="search" placeholder="Search tools, users, or use cases…" aria-label="Search observations">
+            <div id="filters" class="filters" aria-label="Filter by user type">
+              <button class="filter active" type="button" data-filter="All">All</button>
+              <button class="filter" type="button" data-filter="Professor">Professor</button>
+              <button class="filter" type="button" data-filter="Student">Student</button>
+              <button class="filter" type="button" data-filter="TA">TA</button>
+              <button class="filter" type="button" data-filter="Other">Other</button>
+            </div>
+          </div>
+          <div id="summary" class="summary">Loading observations…</div>
+          <div id="content" class="table-wrap"><div class="loading">Loading observations…</div></div>
+        </div>
+      </section>
+
+      <p class="footer"><span id="count" class="count">0 observations</span> collected so far.</p>
+    </main>
+
+    <script>
+      const form = document.getElementById('observationForm');
+      const button = document.getElementById('submitButton');
+      const status = document.getElementById('status');
+      const count = document.getElementById('count');
+      const otherRoleCheckbox = document.getElementById('other');
+      const otherRoleWrap = document.getElementById('otherRoleWrap');
+      const otherRoleInput = document.getElementById('otherRole');
+
+      function showStatus(message, type) {
+        status.textContent = message;
+        status.className = 'status show ' + type;
+      }
+
+      function clearStatus() {
+        status.textContent = '';
+        status.className = 'status';
+      }
+
+      function updateCount(value) {
+        const number = Number(value) || 0;
+        count.textContent = number === 1 ? '1 observation' : number + ' observations';
+      }
+
+      function getFormData() {
+        const data = new FormData(form);
+        return {
+          tool: String(data.get('tool') || '').trim(),
+          roles: data.getAll('role').map(value => String(value).trim()),
+          otherRole: String(data.get('otherRole') || '').trim(),
+          useCase: String(data.get('useCase') || '').trim(),
+        };
+      }
+
+      function setBusy(isBusy) {
+        button.disabled = isBusy;
+        button.textContent = isBusy ? 'Adding…' : 'Add observation';
+      }
+
+
+      document.querySelectorAll('input[name="role"]').forEach(function(input) {
+        input.addEventListener('change', function() {
+          const showOther = otherRoleCheckbox.checked;
+          otherRoleWrap.classList.toggle('show', showOther);
+          otherRoleInput.required = showOther;
+          if (showOther) otherRoleInput.focus();
+          if (!showOther) otherRoleInput.value = '';
+        });
+      });
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        clearStatus();
+
+        const data = getFormData();
+        if (!data.tool) {
+          showStatus('Please enter a tool name.', 'error');
+          document.getElementById('tool').focus();
+          return;
+        }
+        if (!data.roles.length) {
+          showStatus('Please choose at least one type of user.', 'error');
+          document.getElementById('professor').focus();
+          return;
+        }
+        if (data.roles.includes('Other') && !data.otherRole) {
+          showStatus('Please describe who uses the tool when you choose Other.', 'error');
+          otherRoleInput.focus();
+          return;
+        }
+        if (!data.useCase) {
+          showStatus('Please give one example use case.', 'error');
+          document.getElementById('useCase').focus();
+          return;
+        }
+
+        setBusy(true);
+
+        google.script.run
+          .withSuccessHandler(function(result) {
+            setBusy(false);
+            updateCount(result.count);
+
+            if (result.duplicate) {
+              showStatus(result.message, 'error');
+              return;
+            }
+
+            showStatus('Added! Observation ' + result.id + ' is in the collection.', 'success');
+            form.reset();
+            otherRoleWrap.classList.remove('show');
+            otherRoleInput.required = false;
+            document.getElementById('tool').focus();
+          })
+          .withFailureHandler(function(error) {
+            setBusy(false);
+            const message = error && error.message ? error.message : 'Something went wrong. Please try again.';
+            showStatus(message, 'error');
+          })
+          .submitObservation(data);
+      });
+
+      const addSection = document.querySelector('.card');
+      const browseSection = document.getElementById('browseSection');
+      const showAdd = document.getElementById('showAdd');
+      const showBrowse = document.getElementById('showBrowse');
+      const search = document.getElementById('search');
+      const filters = document.getElementById('filters');
+      const browseContent = document.getElementById('content');
+      const browseSummary = document.getElementById('summary');
+      const refreshBrowse = document.getElementById('refreshBrowse');
+      let observations = [];
+      let activeFilter = 'All';
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+
+      function formatDate(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return escapeHtml(value);
+        return date.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      }
+
+      function getFiltered() {
+        const query = search.value.trim().toLowerCase();
+        return observations.filter(function(item) {
+          const roleMatch = activeFilter === 'All' || item.usedBy.split(', ').some(function(user) {
+            return activeFilter === 'Other' ? user.indexOf('Other:') === 0 : user === activeFilter;
+          });
+          const text = [item.tool, item.usedBy, item.useCase].join(' ').toLowerCase();
+          return roleMatch && (!query || text.includes(query));
+        });
+      }
+
+      function renderBrowse() {
+        const rows = getFiltered();
+        browseSummary.textContent = rows.length + (rows.length === 1 ? ' observation' : ' observations') + ' shown';
+        if (!rows.length) {
+          browseContent.innerHTML = '<div class="empty">No observations match your search or filters.</div>';
+          return;
+        }
+        const body = rows.map(function(item) {
+          const users = item.usedBy.split(', ').map(function(user) { return '<span class="pill">' + escapeHtml(user) + '</span>'; }).join('');
+          return '<tr><td class="date">' + formatDate(item.timestamp) + '</td><td><div class="tool">' + escapeHtml(item.tool) + '</div></td><td><div class="users">' + users + '</div></td><td>' + escapeHtml(item.useCase) + '</td></tr>';
+        }).join('');
+        browseContent.innerHTML = '<table><thead><tr><th>Observed</th><th>Tool</th><th>Used by</th><th>Example use case</th></tr></thead><tbody>' + body + '</tbody></table>';
+      }
+
+      function loadBrowse() {
+        const originalText = refreshBrowse.textContent;
+        refreshBrowse.disabled = true;
+        refreshBrowse.textContent = '↻ Refreshing…';
+        browseContent.innerHTML = '<div class="loading">Loading observations…</div>';
+        google.script.run.withSuccessHandler(function(data) {
+          observations = Array.isArray(data) ? data : [];
+          renderBrowse();
+          updateCount(observations.length);
+          refreshBrowse.disabled = false;
+          refreshBrowse.textContent = originalText;
+        }).withFailureHandler(function(error) {
+          browseSummary.textContent = 'Could not load observations.';
+          browseContent.innerHTML = '<div class="empty">' + escapeHtml(error && error.message ? error.message : 'Something went wrong.') + '</div>';
+          refreshBrowse.disabled = false;
+          refreshBrowse.textContent = originalText;
+        }).getObservations();
+      }
+
+      function setView(view) {
+        const browsing = view === 'browse';
+        addSection.hidden = browsing;
+        browseSection.hidden = !browsing;
+        showAdd.classList.toggle('active', !browsing);
+        showBrowse.classList.toggle('active', browsing);
+        if (browsing) loadBrowse();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      showAdd.addEventListener('click', function() { setView('add'); });
+      showBrowse.addEventListener('click', function() { setView('browse'); });
+      refreshBrowse.addEventListener('click', loadBrowse);
+      search.addEventListener('input', renderBrowse);
+      filters.addEventListener('click', function(event) {
+        const filterButton = event.target.closest('[data-filter]');
+        if (!filterButton) return;
+        activeFilter = filterButton.dataset.filter;
+        filters.querySelectorAll('.filter').forEach(function(item) { item.classList.toggle('active', item === filterButton); });
+        renderBrowse();
+      });
+
+      google.script.run
+        .withSuccessHandler(function(state) {
+          updateCount(state.count);
+        })
+        .withFailureHandler(function() {
+          updateCount(0);
+        })
+        .getAppState();
+    </script>
+  </body>
+</html>
