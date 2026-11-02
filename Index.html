@@ -2,6 +2,7 @@
 <html>
   <head>
     <base target="_top">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       :root {
@@ -202,9 +203,97 @@
       .status.success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
       .status.error { background: var(--error-bg); border-color: var(--error-border); color: var(--error-text); }
 
-      .page-nav { display: flex; gap: 8px; margin: 18px 0 18px; }
+      .page-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 28px; }
       .nav-button { width: auto; min-height: 42px; padding: 0 16px; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--text); font: inherit; font-weight: 750; cursor: pointer; }
       .nav-button.active { border-color: var(--accent); background: rgba(124, 58, 237, .08); color: var(--accent-dark); }
+      .scale { padding: 8px 0 0; }
+      .scale-input {
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        width: 80%;
+        height: 36px;
+        margin: 0 10%;
+        background: transparent;
+        cursor: pointer;
+      }
+      .scale-input::-webkit-slider-runnable-track {
+        height: 8px;
+        border-radius: 999px;
+        background:
+          radial-gradient(circle, #7c3aed 0 5px, transparent 5.5px) 0 50% / 10px 10px no-repeat,
+          radial-gradient(circle, #7c3aed 0 5px, transparent 5.5px) 25% 50% / 10px 10px no-repeat,
+          radial-gradient(circle, #7c3aed 0 5px, transparent 5.5px) 50% 50% / 10px 10px no-repeat,
+          radial-gradient(circle, #7c3aed 0 5px, transparent 5.5px) 75% 50% / 10px 10px no-repeat,
+          radial-gradient(circle, #7c3aed 0 5px, transparent 5.5px) 100% 50% / 10px 10px no-repeat,
+          linear-gradient(#dfe4ec, #dfe4ec) center / 100% 4px no-repeat;
+      }
+      .scale-input::-moz-range-track {
+        height: 8px;
+        border: 0;
+        border-radius: 999px;
+        background: #dfe4ec;
+      }
+      .scale-input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        margin-top: -7px;
+        border: 3px solid #fff;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent);
+      }
+      .scale-input::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        border: 3px solid #fff;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent);
+      }
+      .scale-labels {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .scale-labels button {
+        width: 100%;
+        min-height: 0;
+        padding: 8px 4px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.3;
+        text-align: center;
+        white-space: normal;
+        cursor: pointer;
+      }
+      .scale-labels button.active { color: var(--accent-dark); background: rgba(124, 58, 237, .08); }
+      .structure-detail {
+        margin-top: 16px;
+        padding: 16px 16px 4px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fafbfc;
+      }
+      .structure-detail h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.02em; }
+      .structure-detail p { margin: 0 0 12px; color: var(--text); font-size: 14px; line-height: 1.55; }
+      .structure-kicker {
+        margin: 0 0 4px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+      #class-title { margin: 0 0 18px; font-size: clamp(28px, 5vw, 36px); letter-spacing: -.035em; }
       .browse-section { margin-top: 8px; }
       .browse-header { margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; }
       .browse-header h2 { margin: 0; font-size: clamp(28px, 5vw, 40px); letter-spacing: -.035em; }
@@ -225,7 +314,11 @@
       }
       .refresh-button:hover:not(:disabled) { background: #f8f9fb; }
       .refresh-button:disabled { opacity: .65; cursor: wait; }
+      .browse-chooser { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 18px; }
+      .browse-choice { width: auto; min-height: 48px; padding: 0 16px; border: 1px solid var(--border); border-radius: 12px; background: #fff; color: var(--text); font: inherit; font-weight: 750; cursor: pointer; }
+      .browse-choice.active { border-color: var(--accent); background: rgba(124, 58, 237, .08); color: var(--accent-dark); }
       .browse-card { background: var(--card); border: 1px solid rgba(223,228,236,.9); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+      .table-compact table { min-width: 680px; }
       .browse-controls { display: grid; grid-template-columns: minmax(240px, 1fr) auto; gap: 14px; padding: 20px; }
       .search { min-height: 48px; width: 100%; border: 1px solid var(--border); border-radius: 11px; padding: 0 14px; font: inherit; outline: none; }
       .search:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(124,58,237,.12); }
@@ -234,7 +327,7 @@
       .filter.active { border-color: var(--accent); background: rgba(124,58,237,.08); color: var(--accent-dark); }
       .summary { padding: 0 20px 16px; color: var(--muted); font-size: 13px; }
       .table-wrap { overflow-x: auto; border-top: 1px solid var(--border); }
-      table { width: 100%; border-collapse: collapse; min-width: 760px; }
+      table { width: 100%; border-collapse: collapse; min-width: 880px; }
       th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
       th { background: #fafbfc; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
       td { font-size: 14px; line-height: 1.5; }
@@ -244,6 +337,7 @@
       .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #f1f3f7; font-size: 12px; font-weight: 700; white-space: nowrap; }
       .empty, .loading { padding: 46px 24px; text-align: center; color: var(--muted); }
       .date { white-space: nowrap; color: var(--muted); font-size: 12px; }
+      .muted-cell { color: var(--muted); }
 
       .footer {
         margin-top: 18px;
@@ -271,6 +365,7 @@
         .shell { width: min(100% - 22px, 720px); padding-top: 34px; }
         .roles { grid-template-columns: 1fr; }
         .card { border-radius: 15px; padding: 21px; }
+        .page-nav { gap: 8px; }
       }
     </style>
   </head>
@@ -278,6 +373,14 @@
     <main class="shell">
       <p class="eyebrow">Classroom technology feedback</p>
       <h1>What technology are you seeing in classrooms?</h1>
+
+      <nav class="page-nav" aria-label="Pages">
+        <button id="showAdd" class="nav-button active" type="button">Add individual tool</button>
+        <button id="showClass" class="nav-button" type="button">Add class structure</button>
+        <button id="showBrowse" class="nav-button" type="button">Browse observations</button>
+      </nav>
+
+      <section id="addSection">
       <p class="intro">
         Add one technology you have observed and a concrete example of how it is being used.
         This is intentionally quick — one observation at a time.
@@ -326,27 +429,70 @@
             <div class="hint">One concrete example is enough. Up to 500 characters.</div>
           </div>
 
+          <div class="field">
+            <label for="notes">Anything else helpful to know?</label>
+            <textarea id="notes" name="notes" maxlength="500" placeholder="e.g., Works best in large lectures, needs campus Wi-Fi, etc."></textarea>
+            <div class="hint">Optional. Share anything important that the questions above did not cover. Up to 500 characters.</div>
+          </div>
+
           <button id="submitButton" type="submit">Add observation</button>
         </form>
       </section>
+      </section>
 
-      <nav class="page-nav" aria-label="Pages">
-        <button id="showAdd" class="nav-button active" type="button">Add observation</button>
-        <button id="showBrowse" class="nav-button" type="button">Browse observations</button>
-      </nav>
+      <section id="classSection" hidden>
+        <p class="intro">
+          Categorize the structure of an entire class. Drag the slider or choose a title.
+        </p>
+        <section class="card" aria-labelledby="class-title">
+          <h2 id="class-title">Add class structure</h2>
+          <div class="field">
+            <label for="courseCode">Course subject and code</label>
+            <input id="courseCode" name="courseCode" type="text" autocomplete="off" placeholder="e.g., CIS 1100">
+            <div class="hint">No requirements now, will add later.</div>
+            <div class="hint">Maybe link to Penn course data so user can select from known courses in the catalog, handle caps, leading zeros, etc.</div>
+          </div>
+          <div class="field">
+            <label for="courseTitle">Course title</label>
+            <input id="courseTitle" name="courseTitle" type="text" autocomplete="off" placeholder="e.g., Introduction to Computer Programming">
+          </div>
+          <div class="field">
+            <label for="classStructure">Class structure <span class="required">*</span></label>
+            <div class="hint">Think about this from the point of view of the instructor, not necessarily how the students interact with technology. Look at the syllabus for learning goals and objectives and assessments of them to see how central to the course technology is intended to be.</div>
+            <div class="scale">
+              <input id="classStructure" class="scale-input" type="range" min="1" max="5" step="1" value="3" aria-valuemin="1" aria-valuemax="5" aria-valuenow="3" aria-valuetext="Tech and content intertwined" aria-describedby="structureDetail">
+              <div class="scale-labels" id="scaleLabels"></div>
+            </div>
+            <div id="structureDetail" class="structure-detail">
+              <h3 id="structureName"></h3>
+              <p id="structureDescription"></p>
+              <p class="structure-kicker">Diagnostic</p>
+              <p id="structureDiagnostic"></p>
+              <p class="structure-kicker" id="structureExampleLabel">Example</p>
+              <p id="structureExamples"></p>
+            </div>
+          </div>
+          <div id="classStatus" class="status" role="status" aria-live="polite"></div>
+          <button id="classSubmitButton" type="button">Add observation</button>
+        </section>
+      </section>
 
       <section id="browseSection" class="browse-section" aria-labelledby="browse-title" hidden>
         <div class="browse-header">
           <div>
             <p class="eyebrow">Read-only collection</p>
             <h2 id="browse-title">Browse observations</h2>
-            <p class="browse-intro">Search and filter what observers have reported. Observations can only be added through the form.</p>
+            <p class="browse-intro">Choose individual tool observations or class structure observations. Search and filters appear after you choose.</p>
           </div>
-          <button id="refreshBrowse" class="refresh-button" type="button">↻ Refresh</button>
+          <button id="refreshBrowse" class="refresh-button" type="button" hidden>↻ Refresh</button>
         </div>
-        <div class="browse-card">
+        <div id="browseChooser" class="browse-chooser" aria-label="Choose an observation collection">
+          <button id="browseTools" class="browse-choice" type="button">Browse individual tools</button>
+          <button id="browseClasses" class="browse-choice" type="button">Browse class structures</button>
+        </div>
+        <div id="browseResults" class="browse-card" hidden>
           <div class="browse-controls">
-            <input id="search" class="search" type="search" placeholder="Search tools, users, or use cases…" aria-label="Search observations">
+            <input id="search" class="search" type="search" placeholder="Search tools, users, use cases, or notes…" aria-label="Search observations">
             <div id="filters" class="filters" aria-label="Filter by user type">
               <button class="filter active" type="button" data-filter="All">All</button>
               <button class="filter" type="button" data-filter="Professor">Professor</button>
@@ -360,7 +506,7 @@
         </div>
       </section>
 
-      <p class="footer"><span id="count" class="count">0 observations</span> collected so far.</p>
+      <p class="footer"><span id="count" class="count">0 individual tools · 0 class structures</span> collected so far.</p>
     </main>
 
     <script>
@@ -372,19 +518,36 @@
       const otherRoleWrap = document.getElementById('otherRoleWrap');
       const otherRoleInput = document.getElementById('otherRole');
 
+      const classStatus = document.getElementById('classStatus');
+      const classSubmitButton = document.getElementById('classSubmitButton');
+      let toolCount = 0;
+      let classCount = 0;
+
+      function showStatusIn(element, message, type) {
+        element.textContent = message;
+        element.className = 'status show ' + type;
+      }
+
+      function clearStatusIn(element) {
+        element.textContent = '';
+        element.className = 'status';
+      }
+
       function showStatus(message, type) {
-        status.textContent = message;
-        status.className = 'status show ' + type;
+        showStatusIn(status, message, type);
       }
 
       function clearStatus() {
-        status.textContent = '';
-        status.className = 'status';
+        clearStatusIn(status);
       }
 
-      function updateCount(value) {
-        const number = Number(value) || 0;
-        count.textContent = number === 1 ? '1 observation' : number + ' observations';
+      function applyCounts(state) {
+        if (!state) return;
+        if (state.toolCount != null) toolCount = Number(state.toolCount) || 0;
+        if (state.classCount != null) classCount = Number(state.classCount) || 0;
+        const toolLabel = toolCount === 1 ? '1 individual tool' : toolCount + ' individual tools';
+        const classLabel = classCount === 1 ? '1 class structure' : classCount + ' class structures';
+        count.textContent = toolLabel + ' · ' + classLabel;
       }
 
       function getFormData() {
@@ -394,6 +557,7 @@
           roles: data.getAll('role').map(value => String(value).trim()),
           otherRole: String(data.get('otherRole') || '').trim(),
           useCase: String(data.get('useCase') || '').trim(),
+          notes: String(data.get('notes') || '').trim(),
         };
       }
 
@@ -444,7 +608,7 @@
         google.script.run
           .withSuccessHandler(function(result) {
             setBusy(false);
-            updateCount(result.count);
+            applyCounts(result);
 
             if (result.duplicate) {
               showStatus(result.message, 'error');
@@ -465,17 +629,147 @@
           .submitObservation(data);
       });
 
-      const addSection = document.querySelector('.card');
+      const addSection = document.getElementById('addSection');
+      const classSection = document.getElementById('classSection');
       const browseSection = document.getElementById('browseSection');
       const showAdd = document.getElementById('showAdd');
+      const showClass = document.getElementById('showClass');
       const showBrowse = document.getElementById('showBrowse');
+      const classStructure = document.getElementById('classStructure');
+      const scaleLabels = document.getElementById('scaleLabels');
+      const structureName = document.getElementById('structureName');
+      const structureDescription = document.getElementById('structureDescription');
+      const structureDiagnostic = document.getElementById('structureDiagnostic');
+      const structureExampleLabel = document.getElementById('structureExampleLabel');
+      const structureExamples = document.getElementById('structureExamples');
+      const CLASS_STRUCTURES = [
+        {
+          title: 'Tech as a vehicle',
+          description: 'Technology is how students do the work, but it isn’t part of what they’re meant to learn. The tool could be swapped for another (or paper) with no change to the learning goals.',
+          diagnostic: 'No outcomes mention the technology, and no assessment rewards using it well.',
+          exampleLabel: 'Example',
+          examples: 'Students write essays in Google Docs in a history course.'
+        },
+        {
+          title: 'Tech as supporting experience',
+          description: 'Content goals clearly dominate, but the technology plays a deliberate, bounded role in at least one outcome or activity. Students are expected to learn something from using it, though not to master it.',
+          diagnostic: 'Removing the tech would change one unit or assignment, but the course would still be recognizably the same.',
+          exampleLabel: 'Examples',
+          examples: 'Your writing-about-AI course with a vibe coding project; a literature course with one text-mining assignment; a biology course where one lab uses a simulation.'
+        },
+        {
+          title: 'Tech and content intertwined',
+          description: 'The technology and the content are co-equal, and each depends on the other. Students can’t meet the learning goals without the tech, or the tech goals without the content.',
+          diagnostic: 'Learning outcomes name both, and major assessments require both at once. Removing the tech would fundamentally change the course.',
+          exampleLabel: 'Examples',
+          examples: 'A data journalism course (reporting and writing plus data visualization tools); a statistics course taught in R where concepts and software fluency are both graded; a digital humanities course where interpretation depends on computational methods; an environmental science course built around GIS.'
+        },
+        {
+          title: 'Content as context for tech',
+          description: 'The technology is the main thing students are learning, but the content supplies the problems, data, or purpose. Domain knowledge matters mostly because it makes the tech use meaningful.',
+          diagnostic: 'Most outcomes are about tech competence, and a few are about the domain.',
+          exampleLabel: 'Examples',
+          examples: '“Python for Social Scientists” using survey datasets; a UX design course centered on Figma with design principles as supporting content; “Computing for Biologists.”'
+        },
+        {
+          title: 'Tech as the learning goal',
+          description: 'The technology is both the object and the aim of instruction. Content knowledge, if present, is incidental or is the technology’s own internal content.',
+          diagnostic: 'Nearly all outcomes and assessments are about understanding or using the technology itself.',
+          exampleLabel: 'Examples',
+          examples: 'Intro to Python programming; a course on how large language models work; a spreadsheet skills course.'
+        }
+      ];
+
+      CLASS_STRUCTURES.forEach(function(item, index) {
+        const label = document.createElement('button');
+        label.type = 'button';
+        label.dataset.notch = String(index + 1);
+        label.textContent = item.title;
+        scaleLabels.appendChild(label);
+      });
+
+      function classStructureTitle(value) {
+        const number = Number(value);
+        if (String(number) === String(value).trim() && number >= 1 && number <= CLASS_STRUCTURES.length) {
+          return CLASS_STRUCTURES[number - 1].title;
+        }
+        return String(value || '');
+      }
+
+      function setClassStructure(value) {
+        const notch = String(Math.min(CLASS_STRUCTURES.length, Math.max(1, Number(value) || 1)));
+        const item = CLASS_STRUCTURES[Number(notch) - 1];
+        classStructure.value = notch;
+        classStructure.setAttribute('aria-valuenow', notch);
+        classStructure.setAttribute('aria-valuetext', item.title);
+        structureName.textContent = item.title;
+        structureDescription.textContent = item.description;
+        structureDiagnostic.textContent = item.diagnostic;
+        structureExampleLabel.textContent = item.exampleLabel;
+        structureExamples.textContent = item.examples;
+        scaleLabels.querySelectorAll('[data-notch]').forEach(function(label) {
+          label.classList.toggle('active', label.dataset.notch === notch);
+        });
+      }
+
+      classStructure.addEventListener('input', function() {
+        setClassStructure(classStructure.value);
+      });
+      scaleLabels.addEventListener('click', function(event) {
+        const notch = event.target.closest('[data-notch]');
+        if (!notch) return;
+        setClassStructure(notch.dataset.notch);
+      });
+      setClassStructure(classStructure.value);
+
+      function setClassBusy(isBusy) {
+        classSubmitButton.disabled = isBusy;
+        classSubmitButton.textContent = isBusy ? 'Adding…' : 'Add observation';
+      }
+
+      const courseCodeInput = document.getElementById('courseCode');
+      const courseTitleInput = document.getElementById('courseTitle');
+
+      classSubmitButton.addEventListener('click', function() {
+        clearStatusIn(classStatus);
+        const courseCode = courseCodeInput.value.trim();
+        const courseTitle = courseTitleInput.value.trim();
+
+        setClassBusy(true);
+        google.script.run
+          .withSuccessHandler(function(result) {
+            setClassBusy(false);
+            applyCounts(result);
+            showStatusIn(classStatus, 'Added! Observation ' + result.id + ' is in the collection.', 'success');
+            courseCodeInput.value = '';
+            courseTitleInput.value = '';
+            setClassStructure(3);
+            courseCodeInput.focus();
+          })
+          .withFailureHandler(function(error) {
+            setClassBusy(false);
+            const message = error && error.message ? error.message : 'Something went wrong. Please try again.';
+            showStatusIn(classStatus, message, 'error');
+          })
+          .submitClassStructure({
+            courseCode: courseCode,
+            courseTitle: courseTitle,
+            rating: CLASS_STRUCTURES[Number(classStructure.value) - 1].title,
+          });
+      });
+
       const search = document.getElementById('search');
       const filters = document.getElementById('filters');
       const browseContent = document.getElementById('content');
       const browseSummary = document.getElementById('summary');
       const refreshBrowse = document.getElementById('refreshBrowse');
+      const browseChooser = document.getElementById('browseChooser');
+      const browseResults = document.getElementById('browseResults');
+      const browseTools = document.getElementById('browseTools');
+      const browseClasses = document.getElementById('browseClasses');
       let observations = [];
       let activeFilter = 'All';
+      let browseMode = '';
 
       function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -489,13 +783,30 @@
         return date.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       }
 
+      function renderFilters() {
+        const options = browseMode === 'classes'
+          ? ['All'].concat(CLASS_STRUCTURES.map(function(item) { return item.title; }))
+          : ['All', 'Professor', 'Student', 'TA', 'Other'];
+        filters.setAttribute('aria-label', browseMode === 'classes' ? 'Filter by class structure' : 'Filter by user type');
+        filters.innerHTML = options.map(function(option) {
+          const active = option === activeFilter ? ' active' : '';
+          return '<button class="filter' + active + '" type="button" data-filter="' + option + '">' + option + '</button>';
+        }).join('');
+      }
+
       function getFiltered() {
         const query = search.value.trim().toLowerCase();
         return observations.filter(function(item) {
+          if (browseMode === 'classes') {
+            const structure = classStructureTitle(item.rating);
+            const ratingMatch = activeFilter === 'All' || structure === activeFilter;
+            const text = [item.courseCode, item.courseTitle, structure].join(' ').toLowerCase();
+            return ratingMatch && (!query || text.includes(query));
+          }
           const roleMatch = activeFilter === 'All' || item.usedBy.split(', ').some(function(user) {
             return activeFilter === 'Other' ? user.indexOf('Other:') === 0 : user === activeFilter;
           });
-          const text = [item.tool, item.usedBy, item.useCase].join(' ').toLowerCase();
+          const text = [item.tool, item.usedBy, item.useCase, item.notes].join(' ').toLowerCase();
           return roleMatch && (!query || text.includes(query));
         });
       }
@@ -503,26 +814,66 @@
       function renderBrowse() {
         const rows = getFiltered();
         browseSummary.textContent = rows.length + (rows.length === 1 ? ' observation' : ' observations') + ' shown';
+        browseContent.classList.toggle('table-compact', browseMode === 'classes');
         if (!rows.length) {
           browseContent.innerHTML = '<div class="empty">No observations match your search or filters.</div>';
           return;
         }
-        const body = rows.map(function(item) {
-          const users = item.usedBy.split(', ').map(function(user) { return '<span class="pill">' + escapeHtml(user) + '</span>'; }).join('');
-          return '<tr><td class="date">' + formatDate(item.timestamp) + '</td><td><div class="tool">' + escapeHtml(item.tool) + '</div></td><td><div class="users">' + users + '</div></td><td>' + escapeHtml(item.useCase) + '</td></tr>';
-        }).join('');
-        browseContent.innerHTML = '<table><thead><tr><th>Observed</th><th>Tool</th><th>Used by</th><th>Example use case</th></tr></thead><tbody>' + body + '</tbody></table>';
+        const body = browseMode === 'classes'
+          ? rows.map(function(item) {
+              return '<tr><td class="date">' + formatDate(item.timestamp) + '</td><td><div class="tool">' + escapeHtml(item.courseCode) + '</div></td><td>' + escapeHtml(item.courseTitle) + '</td><td>' + escapeHtml(classStructureTitle(item.rating)) + '</td></tr>';
+            }).join('')
+          : rows.map(function(item) {
+              const users = item.usedBy.split(', ').map(function(user) { return '<span class="pill">' + escapeHtml(user) + '</span>'; }).join('');
+              const notes = item.notes ? escapeHtml(item.notes) : '<span class="muted-cell">—</span>';
+              return '<tr><td class="date">' + formatDate(item.timestamp) + '</td><td><div class="tool">' + escapeHtml(item.tool) + '</div></td><td><div class="users">' + users + '</div></td><td>' + escapeHtml(item.useCase) + '</td><td>' + notes + '</td></tr>';
+            }).join('');
+        const head = browseMode === 'classes'
+          ? '<tr><th>Observed</th><th>Course</th><th>Title</th><th>Class structure</th></tr>'
+          : '<tr><th>Observed</th><th>Tool</th><th>Used by</th><th>Example use case</th><th>Anything else</th></tr>';
+        browseContent.innerHTML = '<table><thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
+      }
+
+      function resetBrowsePrompt() {
+        browseMode = '';
+        observations = [];
+        activeFilter = 'All';
+        search.value = '';
+        browseResults.hidden = true;
+        refreshBrowse.hidden = true;
+        browseTools.classList.remove('active');
+        browseClasses.classList.remove('active');
+        browseSummary.textContent = '';
+        browseContent.innerHTML = '';
+      }
+
+      function chooseBrowse(mode) {
+        browseMode = mode;
+        browseTools.classList.toggle('active', mode === 'tools');
+        browseClasses.classList.toggle('active', mode === 'classes');
+        browseResults.hidden = false;
+        refreshBrowse.hidden = false;
+        search.value = '';
+        search.placeholder = mode === 'classes'
+          ? 'Search courses, titles, or class structures…'
+          : 'Search tools, users, use cases, or notes…';
+        activeFilter = 'All';
+        renderFilters();
+        loadBrowse();
       }
 
       function loadBrowse() {
+        if (!browseMode) return;
         const originalText = refreshBrowse.textContent;
         refreshBrowse.disabled = true;
         refreshBrowse.textContent = '↻ Refreshing…';
         browseContent.innerHTML = '<div class="loading">Loading observations…</div>';
-        google.script.run.withSuccessHandler(function(data) {
+        const runner = google.script.run.withSuccessHandler(function(data) {
           observations = Array.isArray(data) ? data : [];
+          if (browseMode === 'classes') classCount = observations.length;
+          else toolCount = observations.length;
+          applyCounts({ toolCount: toolCount, classCount: classCount });
           renderBrowse();
-          updateCount(observations.length);
           refreshBrowse.disabled = false;
           refreshBrowse.textContent = originalText;
         }).withFailureHandler(function(error) {
@@ -530,21 +881,27 @@
           browseContent.innerHTML = '<div class="empty">' + escapeHtml(error && error.message ? error.message : 'Something went wrong.') + '</div>';
           refreshBrowse.disabled = false;
           refreshBrowse.textContent = originalText;
-        }).getObservations();
+        });
+        if (browseMode === 'classes') runner.getClassStructures();
+        else runner.getObservations();
       }
 
       function setView(view) {
-        const browsing = view === 'browse';
-        addSection.hidden = browsing;
-        browseSection.hidden = !browsing;
-        showAdd.classList.toggle('active', !browsing);
-        showBrowse.classList.toggle('active', browsing);
-        if (browsing) loadBrowse();
+        addSection.hidden = view !== 'add';
+        classSection.hidden = view !== 'class';
+        browseSection.hidden = view !== 'browse';
+        showAdd.classList.toggle('active', view === 'add');
+        showClass.classList.toggle('active', view === 'class');
+        showBrowse.classList.toggle('active', view === 'browse');
+        if (view === 'browse') resetBrowsePrompt();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       showAdd.addEventListener('click', function() { setView('add'); });
+      showClass.addEventListener('click', function() { setView('class'); });
       showBrowse.addEventListener('click', function() { setView('browse'); });
+      browseTools.addEventListener('click', function() { chooseBrowse('tools'); });
+      browseClasses.addEventListener('click', function() { chooseBrowse('classes'); });
       refreshBrowse.addEventListener('click', loadBrowse);
       search.addEventListener('input', renderBrowse);
       filters.addEventListener('click', function(event) {
@@ -557,10 +914,10 @@
 
       google.script.run
         .withSuccessHandler(function(state) {
-          updateCount(state.count);
+          applyCounts(state);
         })
         .withFailureHandler(function() {
-          updateCount(0);
+          applyCounts({ toolCount: 0, classCount: 0 });
         })
         .getAppState();
     </script>
